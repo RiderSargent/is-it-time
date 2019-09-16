@@ -2,6 +2,7 @@ module Main exposing (Model, Msg(..), formatMonth, init, main, subscriptions, up
 
 import Browser
 import Html exposing (..)
+import Html.Attributes exposing (id)
 import Task
 import Time exposing (..)
 
@@ -75,16 +76,16 @@ subscriptions model =
 view : Model -> Html Msg
 view model =
     div
-        []
+        [ id "container" ]
         [ div
+            [ id "is-it-time" ]
+            [ viewNandosTime model ]
+        , div
             []
             [ viewShortDate model ]
         , div
             []
             [ viewTime model ]
-        , div
-            []
-            [ viewNandosTime model ]
         , pre
             []
             [ model
