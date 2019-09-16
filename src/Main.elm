@@ -2,7 +2,7 @@ module Main exposing (Model, Msg(..), formatMonth, init, main, subscriptions, up
 
 import Browser
 import Html exposing (..)
-import Html.Attributes exposing (id)
+import Html.Attributes exposing (class, id)
 import Task
 import Time exposing (..)
 
@@ -81,13 +81,13 @@ view model =
             [ id "is-it-time" ]
             [ viewNandosTime model ]
         , div
-            []
+            [ class "debug" ]
             [ viewShortDate model ]
         , div
-            []
+            [ class "debug" ]
             [ viewTime model ]
         , pre
-            []
+            [ class "debug" ]
             [ model
                 |> Debug.toString
                 |> text

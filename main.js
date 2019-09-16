@@ -5725,6 +5725,7 @@ var elm$html$Html$Attributes$stringProperty = F2(
 			key,
 			elm$json$Json$Encode$string(string));
 	});
+var elm$html$Html$Attributes$class = elm$html$Html$Attributes$stringProperty('className');
 var elm$html$Html$Attributes$id = elm$html$Html$Attributes$stringProperty('id');
 var author$project$Main$view = function (model) {
 	return A2(
@@ -5747,21 +5748,30 @@ var author$project$Main$view = function (model) {
 					])),
 				A2(
 				elm$html$Html$div,
-				_List_Nil,
+				_List_fromArray(
+					[
+						elm$html$Html$Attributes$class('debug')
+					]),
 				_List_fromArray(
 					[
 						author$project$Main$viewShortDate(model)
 					])),
 				A2(
 				elm$html$Html$div,
-				_List_Nil,
+				_List_fromArray(
+					[
+						elm$html$Html$Attributes$class('debug')
+					]),
 				_List_fromArray(
 					[
 						author$project$Main$viewTime(model)
 					])),
 				A2(
 				elm$html$Html$pre,
-				_List_Nil,
+				_List_fromArray(
+					[
+						elm$html$Html$Attributes$class('debug')
+					]),
 				_List_fromArray(
 					[
 						elm$html$Html$text(
