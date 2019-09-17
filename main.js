@@ -5440,118 +5440,6 @@ var author$project$Main$update = F2(
 				elm$core$Platform$Cmd$none);
 		}
 	});
-var elm$json$Json$Decode$map = _Json_map1;
-var elm$json$Json$Decode$map2 = _Json_map2;
-var elm$json$Json$Decode$succeed = _Json_succeed;
-var elm$virtual_dom$VirtualDom$toHandlerInt = function (handler) {
-	switch (handler.$) {
-		case 'Normal':
-			return 0;
-		case 'MayStopPropagation':
-			return 1;
-		case 'MayPreventDefault':
-			return 2;
-		default:
-			return 3;
-	}
-};
-var elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
-var elm$html$Html$text = elm$virtual_dom$VirtualDom$text;
-var elm$time$Time$Fri = {$: 'Fri'};
-var elm$core$Basics$modBy = _Basics_modBy;
-var elm$time$Time$flooredDiv = F2(
-	function (numerator, denominator) {
-		return elm$core$Basics$floor(numerator / denominator);
-	});
-var elm$time$Time$posixToMillis = function (_n0) {
-	var millis = _n0.a;
-	return millis;
-};
-var elm$time$Time$toAdjustedMinutesHelp = F3(
-	function (defaultOffset, posixMinutes, eras) {
-		toAdjustedMinutesHelp:
-		while (true) {
-			if (!eras.b) {
-				return posixMinutes + defaultOffset;
-			} else {
-				var era = eras.a;
-				var olderEras = eras.b;
-				if (_Utils_cmp(era.start, posixMinutes) < 0) {
-					return posixMinutes + era.offset;
-				} else {
-					var $temp$defaultOffset = defaultOffset,
-						$temp$posixMinutes = posixMinutes,
-						$temp$eras = olderEras;
-					defaultOffset = $temp$defaultOffset;
-					posixMinutes = $temp$posixMinutes;
-					eras = $temp$eras;
-					continue toAdjustedMinutesHelp;
-				}
-			}
-		}
-	});
-var elm$time$Time$toAdjustedMinutes = F2(
-	function (_n0, time) {
-		var defaultOffset = _n0.a;
-		var eras = _n0.b;
-		return A3(
-			elm$time$Time$toAdjustedMinutesHelp,
-			defaultOffset,
-			A2(
-				elm$time$Time$flooredDiv,
-				elm$time$Time$posixToMillis(time),
-				60000),
-			eras);
-	});
-var elm$time$Time$toHour = F2(
-	function (zone, time) {
-		return A2(
-			elm$core$Basics$modBy,
-			24,
-			A2(
-				elm$time$Time$flooredDiv,
-				A2(elm$time$Time$toAdjustedMinutes, zone, time),
-				60));
-	});
-var elm$time$Time$Mon = {$: 'Mon'};
-var elm$time$Time$Sat = {$: 'Sat'};
-var elm$time$Time$Sun = {$: 'Sun'};
-var elm$time$Time$Thu = {$: 'Thu'};
-var elm$time$Time$Tue = {$: 'Tue'};
-var elm$time$Time$Wed = {$: 'Wed'};
-var elm$time$Time$toWeekday = F2(
-	function (zone, time) {
-		var _n0 = A2(
-			elm$core$Basics$modBy,
-			7,
-			A2(
-				elm$time$Time$flooredDiv,
-				A2(elm$time$Time$toAdjustedMinutes, zone, time),
-				60 * 24));
-		switch (_n0) {
-			case 0:
-				return elm$time$Time$Thu;
-			case 1:
-				return elm$time$Time$Fri;
-			case 2:
-				return elm$time$Time$Sat;
-			case 3:
-				return elm$time$Time$Sun;
-			case 4:
-				return elm$time$Time$Mon;
-			case 5:
-				return elm$time$Time$Tue;
-			default:
-				return elm$time$Time$Wed;
-		}
-	});
-var author$project$Main$viewIsItTime = function (model) {
-	var weekday = A2(elm$time$Time$toWeekday, model.zone, model.time);
-	var isFriday = _Utils_eq(weekday, elm$time$Time$Fri) ? true : false;
-	var hour = A2(elm$time$Time$toHour, model.zone, model.time);
-	var isNoon = (hour === 12) ? true : false;
-	return (isFriday && isNoon) ? elm$html$Html$text('It\'s time!') : elm$html$Html$text('No');
-};
 var author$project$Main$formatMonth = function (month) {
 	switch (month.$) {
 		case 'Jan':
@@ -5601,6 +5489,67 @@ var author$project$Main$formatWeekday = function (weekday) {
 var author$project$Main$toZeroPaddedString = function (digits) {
 	return (digits < 10) ? ('0' + elm$core$String$fromInt(digits)) : elm$core$String$fromInt(digits);
 };
+var elm$json$Json$Decode$map = _Json_map1;
+var elm$json$Json$Decode$map2 = _Json_map2;
+var elm$json$Json$Decode$succeed = _Json_succeed;
+var elm$virtual_dom$VirtualDom$toHandlerInt = function (handler) {
+	switch (handler.$) {
+		case 'Normal':
+			return 0;
+		case 'MayStopPropagation':
+			return 1;
+		case 'MayPreventDefault':
+			return 2;
+		default:
+			return 3;
+	}
+};
+var elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
+var elm$html$Html$text = elm$virtual_dom$VirtualDom$text;
+var elm$time$Time$flooredDiv = F2(
+	function (numerator, denominator) {
+		return elm$core$Basics$floor(numerator / denominator);
+	});
+var elm$time$Time$posixToMillis = function (_n0) {
+	var millis = _n0.a;
+	return millis;
+};
+var elm$time$Time$toAdjustedMinutesHelp = F3(
+	function (defaultOffset, posixMinutes, eras) {
+		toAdjustedMinutesHelp:
+		while (true) {
+			if (!eras.b) {
+				return posixMinutes + defaultOffset;
+			} else {
+				var era = eras.a;
+				var olderEras = eras.b;
+				if (_Utils_cmp(era.start, posixMinutes) < 0) {
+					return posixMinutes + era.offset;
+				} else {
+					var $temp$defaultOffset = defaultOffset,
+						$temp$posixMinutes = posixMinutes,
+						$temp$eras = olderEras;
+					defaultOffset = $temp$defaultOffset;
+					posixMinutes = $temp$posixMinutes;
+					eras = $temp$eras;
+					continue toAdjustedMinutesHelp;
+				}
+			}
+		}
+	});
+var elm$time$Time$toAdjustedMinutes = F2(
+	function (_n0, time) {
+		var defaultOffset = _n0.a;
+		var eras = _n0.b;
+		return A3(
+			elm$time$Time$toAdjustedMinutesHelp,
+			defaultOffset,
+			A2(
+				elm$time$Time$flooredDiv,
+				elm$time$Time$posixToMillis(time),
+				60000),
+			eras);
+	});
 var elm$core$Basics$ge = _Utils_ge;
 var elm$core$Basics$negate = function (n) {
 	return -n;
@@ -5624,6 +5573,17 @@ var elm$time$Time$toDay = F2(
 	function (zone, time) {
 		return elm$time$Time$toCivil(
 			A2(elm$time$Time$toAdjustedMinutes, zone, time)).day;
+	});
+var elm$core$Basics$modBy = _Basics_modBy;
+var elm$time$Time$toHour = F2(
+	function (zone, time) {
+		return A2(
+			elm$core$Basics$modBy,
+			24,
+			A2(
+				elm$time$Time$flooredDiv,
+				A2(elm$time$Time$toAdjustedMinutes, zone, time),
+				60));
 	});
 var elm$time$Time$toMinute = F2(
 	function (zone, time) {
@@ -5685,12 +5645,45 @@ var elm$time$Time$toSecond = F2(
 				elm$time$Time$posixToMillis(time),
 				1000));
 	});
+var elm$time$Time$Fri = {$: 'Fri'};
+var elm$time$Time$Mon = {$: 'Mon'};
+var elm$time$Time$Sat = {$: 'Sat'};
+var elm$time$Time$Sun = {$: 'Sun'};
+var elm$time$Time$Thu = {$: 'Thu'};
+var elm$time$Time$Tue = {$: 'Tue'};
+var elm$time$Time$Wed = {$: 'Wed'};
+var elm$time$Time$toWeekday = F2(
+	function (zone, time) {
+		var _n0 = A2(
+			elm$core$Basics$modBy,
+			7,
+			A2(
+				elm$time$Time$flooredDiv,
+				A2(elm$time$Time$toAdjustedMinutes, zone, time),
+				60 * 24));
+		switch (_n0) {
+			case 0:
+				return elm$time$Time$Thu;
+			case 1:
+				return elm$time$Time$Fri;
+			case 2:
+				return elm$time$Time$Sat;
+			case 3:
+				return elm$time$Time$Sun;
+			case 4:
+				return elm$time$Time$Mon;
+			case 5:
+				return elm$time$Time$Tue;
+			default:
+				return elm$time$Time$Wed;
+		}
+	});
 var elm$time$Time$toYear = F2(
 	function (zone, time) {
 		return elm$time$Time$toCivil(
 			A2(elm$time$Time$toAdjustedMinutes, zone, time)).year;
 	});
-var author$project$Main$viewTime = function (model) {
+var author$project$Main$viewHumanTime = function (model) {
 	var year = elm$core$String$fromInt(
 		A2(elm$time$Time$toYear, model.zone, model.time));
 	var weekday = author$project$Main$formatWeekday(
@@ -5705,7 +5698,12 @@ var author$project$Main$viewTime = function (model) {
 		A2(elm$time$Time$toHour, model.zone, model.time));
 	var day = author$project$Main$toZeroPaddedString(
 		A2(elm$time$Time$toDay, model.zone, model.time));
-	return elm$html$Html$text(year + ('-' + (month + ('-' + (day + (' ' + (weekday + (' ' + (hour + (':' + (minute + (':' + second))))))))))));
+	return elm$html$Html$text(year + ('-' + (month + ('-' + (day + (' ' + (weekday + (' ' + (hour + (':' + (minute + (':' + (second + '\n')))))))))))));
+};
+var author$project$Main$viewIsItTime = function (model) {
+	var weekday = A2(elm$time$Time$toWeekday, model.zone, model.time);
+	var hour = A2(elm$time$Time$toHour, model.zone, model.time);
+	return (_Utils_eq(weekday, elm$time$Time$Fri) && (hour === 12)) ? elm$html$Html$text('It\'s time!') : elm$html$Html$text('No');
 };
 var elm$core$Debug$toString = _Debug_toString;
 var elm$html$Html$div = _VirtualDom_node('div');
@@ -5740,16 +5738,6 @@ var author$project$Main$view = function (model) {
 						author$project$Main$viewIsItTime(model)
 					])),
 				A2(
-				elm$html$Html$div,
-				_List_fromArray(
-					[
-						elm$html$Html$Attributes$class('debug')
-					]),
-				_List_fromArray(
-					[
-						author$project$Main$viewTime(model)
-					])),
-				A2(
 				elm$html$Html$pre,
 				_List_fromArray(
 					[
@@ -5757,8 +5745,9 @@ var author$project$Main$view = function (model) {
 					]),
 				_List_fromArray(
 					[
+						author$project$Main$viewHumanTime(model),
 						elm$html$Html$text(
-						elm$core$Debug$toString(model))
+						elm$core$Debug$toString(model.time))
 					]))
 			]));
 };

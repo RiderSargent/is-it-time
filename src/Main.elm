@@ -80,12 +80,10 @@ view model =
         [ div
             [ id "is-it-time" ]
             [ viewIsItTime model ]
-        , div
-            [ class "debug" ]
-            [ viewTime model ]
         , pre
             [ class "debug" ]
-            [ model
+            [ viewHumanTime model
+            , model.time
                 |> Debug.toString
                 |> text
             ]
@@ -100,30 +98,16 @@ viewIsItTime model =
 
         hour =
             Time.toHour model.zone model.time
-
-        isFriday =
-            if weekday == Fri then
-                True
-
-            else
-                False
-
-        isNoon =
-            if hour == 12 then
-                True
-
-            else
-                False
     in
-    if isFriday && isNoon then
+    if weekday == Fri && hour == 12 then
         text "It's time!"
 
     else
         text "No"
 
 
-viewTime : Model -> Html msg
-viewTime model =
+viewHumanTime : Model -> Html msg
+viewHumanTime model =
     let
         year =
             String.fromInt (Time.toYear model.zone model.time)
@@ -146,7 +130,7 @@ viewTime model =
         second =
             toZeroPaddedString (Time.toSecond model.zone model.time)
     in
-    text (year ++ "-" ++ month ++ "-" ++ day ++ " " ++ weekday ++ " " ++ hour ++ ":" ++ minute ++ ":" ++ second)
+    text (year ++ "-" ++ month ++ "-" ++ day ++ " " ++ weekday ++ " " ++ hour ++ ":" ++ minute ++ ":" ++ second ++ "\n")
 
 
 toZeroPaddedString : Int -> String
