@@ -5440,6 +5440,7 @@ var author$project$Main$update = F2(
 				elm$core$Platform$Cmd$none);
 		}
 	});
+var author$project$Main$friNoon = elm$time$Time$millisToPosix(1568372400000);
 var author$project$Main$formatMonth = function (month) {
 	switch (month.$) {
 		case 'Jan':
@@ -5683,29 +5684,29 @@ var elm$time$Time$toYear = F2(
 		return elm$time$Time$toCivil(
 			A2(elm$time$Time$toAdjustedMinutes, zone, time)).year;
 	});
-var author$project$Main$viewHumanTime = function (model) {
-	var year = elm$core$String$fromInt(
-		A2(elm$time$Time$toYear, model.zone, model.time));
-	var weekday = author$project$Main$formatWeekday(
-		A2(elm$time$Time$toWeekday, model.zone, model.time));
-	var second = author$project$Main$toZeroPaddedString(
-		A2(elm$time$Time$toSecond, model.zone, model.time));
-	var month = author$project$Main$formatMonth(
-		A2(elm$time$Time$toMonth, model.zone, model.time));
-	var minute = author$project$Main$toZeroPaddedString(
-		A2(elm$time$Time$toMinute, model.zone, model.time));
-	var hour = elm$core$String$fromInt(
-		A2(elm$time$Time$toHour, model.zone, model.time));
-	var day = author$project$Main$toZeroPaddedString(
-		A2(elm$time$Time$toDay, model.zone, model.time));
-	return elm$html$Html$text(year + ('-' + (month + ('-' + (day + (' ' + (weekday + (' ' + (hour + (':' + (minute + (':' + (second + '\n')))))))))))));
-};
+var author$project$Main$viewHumanTime = F2(
+	function (tz, time) {
+		var year = elm$core$String$fromInt(
+			A2(elm$time$Time$toYear, tz, time));
+		var weekday = author$project$Main$formatWeekday(
+			A2(elm$time$Time$toWeekday, tz, time));
+		var second = author$project$Main$toZeroPaddedString(
+			A2(elm$time$Time$toSecond, tz, time));
+		var month = author$project$Main$formatMonth(
+			A2(elm$time$Time$toMonth, tz, time));
+		var minute = author$project$Main$toZeroPaddedString(
+			A2(elm$time$Time$toMinute, tz, time));
+		var hour = elm$core$String$fromInt(
+			A2(elm$time$Time$toHour, tz, time));
+		var day = author$project$Main$toZeroPaddedString(
+			A2(elm$time$Time$toDay, tz, time));
+		return elm$html$Html$text(year + ('-' + (month + ('-' + (day + (' ' + (weekday + (' ' + (hour + (':' + (minute + (':' + second))))))))))));
+	});
 var author$project$Main$viewIsItTime = function (model) {
 	var weekday = A2(elm$time$Time$toWeekday, model.zone, model.time);
 	var hour = A2(elm$time$Time$toHour, model.zone, model.time);
 	return (_Utils_eq(weekday, elm$time$Time$Fri) && (hour === 12)) ? elm$html$Html$text('It\'s time!') : elm$html$Html$text('No');
 };
-var elm$core$Debug$toString = _Debug_toString;
 var elm$html$Html$div = _VirtualDom_node('div');
 var elm$html$Html$pre = _VirtualDom_node('pre');
 var elm$json$Json$Encode$string = _Json_wrap;
@@ -5745,9 +5746,9 @@ var author$project$Main$view = function (model) {
 					]),
 				_List_fromArray(
 					[
-						author$project$Main$viewHumanTime(model),
-						elm$html$Html$text(
-						elm$core$Debug$toString(model.time))
+						A2(author$project$Main$viewHumanTime, model.zone, model.time),
+						elm$html$Html$text('\n'),
+						A2(author$project$Main$viewHumanTime, model.zone, author$project$Main$friNoon)
 					]))
 			]));
 };

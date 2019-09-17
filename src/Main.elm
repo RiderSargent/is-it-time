@@ -82,12 +82,22 @@ view model =
             [ viewIsItTime model ]
         , pre
             [ class "debug" ]
-            [ viewHumanTime model
-            , model.time
-                |> Debug.toString
-                |> text
+            [ viewHumanTime model.zone model.time
+            , text "\n"
+            , viewHumanTime model.zone friNoon
             ]
         ]
+
+
+friNoon : Posix
+friNoon =
+    -- 2019-09-13 Fri 12:00:00 UTC
+    millisToPosix 1568372400000
+
+
+oneWeekInMs : Int
+oneWeekInMs =
+    604800000
 
 
 viewIsItTime : Model -> Html msg
@@ -106,31 +116,31 @@ viewIsItTime model =
         text "No"
 
 
-viewHumanTime : Model -> Html msg
-viewHumanTime model =
+viewHumanTime : Zone -> Posix -> Html msg
+viewHumanTime tz time =
     let
         year =
-            String.fromInt (Time.toYear model.zone model.time)
+            String.fromInt (Time.toYear tz time)
 
         month =
-            formatMonth (Time.toMonth model.zone model.time)
+            formatMonth (Time.toMonth tz time)
 
         day =
-            toZeroPaddedString (Time.toDay model.zone model.time)
+            toZeroPaddedString (Time.toDay tz time)
 
         weekday =
-            formatWeekday (Time.toWeekday model.zone model.time)
+            formatWeekday (Time.toWeekday tz time)
 
         hour =
-            String.fromInt (Time.toHour model.zone model.time)
+            String.fromInt (Time.toHour tz time)
 
         minute =
-            toZeroPaddedString (Time.toMinute model.zone model.time)
+            toZeroPaddedString (Time.toMinute tz time)
 
         second =
-            toZeroPaddedString (Time.toSecond model.zone model.time)
+            toZeroPaddedString (Time.toSecond tz time)
     in
-    text (year ++ "-" ++ month ++ "-" ++ day ++ " " ++ weekday ++ " " ++ hour ++ ":" ++ minute ++ ":" ++ second ++ "\n")
+    text (year ++ "-" ++ month ++ "-" ++ day ++ " " ++ weekday ++ " " ++ hour ++ ":" ++ minute ++ ":" ++ second)
 
 
 toZeroPaddedString : Int -> String
