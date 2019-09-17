@@ -79,10 +79,7 @@ view model =
         [ id "container" ]
         [ div
             [ id "is-it-time" ]
-            [ viewNandosTime model ]
-        , div
-            [ class "debug" ]
-            [ viewShortDate model ]
+            [ viewIsItTime model ]
         , div
             [ class "debug" ]
             [ viewTime model ]
@@ -95,8 +92,8 @@ view model =
         ]
 
 
-viewNandosTime : Model -> Html msg
-viewNandosTime model =
+viewIsItTime : Model -> Html msg
+viewIsItTime model =
     let
         weekday =
             Time.toWeekday model.zone model.time
@@ -119,59 +116,41 @@ viewNandosTime model =
                 False
     in
     if isFriday && isNoon then
-        text "Yes!"
+        text "It's time!"
 
     else
         text "No"
 
 
-viewShortDate : Model -> Html msg
-viewShortDate model =
-    let
-        tz =
-            model.zone
-
-        posix =
-            model.time
-
-        year =
-            String.fromInt (Time.toYear tz posix)
-
-        month =
-            formatMonth (Time.toMonth tz posix)
-
-        day =
-            zeroPad (Time.toDay tz posix)
-
-        weekday =
-            formatWeekday (Time.toWeekday tz posix)
-    in
-    text (year ++ "-" ++ month ++ "-" ++ day ++ " " ++ weekday)
-
-
 viewTime : Model -> Html msg
 viewTime model =
     let
-        tz =
-            model.zone
+        year =
+            String.fromInt (Time.toYear model.zone model.time)
 
-        posix =
-            model.time
+        month =
+            formatMonth (Time.toMonth model.zone model.time)
+
+        day =
+            toZeroPaddedString (Time.toDay model.zone model.time)
+
+        weekday =
+            formatWeekday (Time.toWeekday model.zone model.time)
 
         hour =
-            String.fromInt (Time.toHour tz posix)
+            String.fromInt (Time.toHour model.zone model.time)
 
         minute =
-            zeroPad (Time.toMinute tz posix)
+            toZeroPaddedString (Time.toMinute model.zone model.time)
 
         second =
-            zeroPad (Time.toSecond tz posix)
+            toZeroPaddedString (Time.toSecond model.zone model.time)
     in
-    text (hour ++ ":" ++ minute ++ ":" ++ second)
+    text (year ++ "-" ++ month ++ "-" ++ day ++ " " ++ weekday ++ " " ++ hour ++ ":" ++ minute ++ ":" ++ second)
 
 
-zeroPad : Int -> String
-zeroPad digits =
+toZeroPaddedString : Int -> String
+toZeroPaddedString digits =
     if digits < 10 then
         "0" ++ String.fromInt digits
 

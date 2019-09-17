@@ -5545,12 +5545,12 @@ var elm$time$Time$toWeekday = F2(
 				return elm$time$Time$Wed;
 		}
 	});
-var author$project$Main$viewNandosTime = function (model) {
+var author$project$Main$viewIsItTime = function (model) {
 	var weekday = A2(elm$time$Time$toWeekday, model.zone, model.time);
 	var isFriday = _Utils_eq(weekday, elm$time$Time$Fri) ? true : false;
 	var hour = A2(elm$time$Time$toHour, model.zone, model.time);
 	var isNoon = (hour === 12) ? true : false;
-	return (isFriday && isNoon) ? elm$html$Html$text('Yes!') : elm$html$Html$text('No');
+	return (isFriday && isNoon) ? elm$html$Html$text('It\'s time!') : elm$html$Html$text('No');
 };
 var author$project$Main$formatMonth = function (month) {
 	switch (month.$) {
@@ -5598,7 +5598,7 @@ var author$project$Main$formatWeekday = function (weekday) {
 			return 'Sun';
 	}
 };
-var author$project$Main$zeroPad = function (digits) {
+var author$project$Main$toZeroPaddedString = function (digits) {
 	return (digits < 10) ? ('0' + elm$core$String$fromInt(digits)) : elm$core$String$fromInt(digits);
 };
 var elm$core$Basics$ge = _Utils_ge;
@@ -5624,6 +5624,13 @@ var elm$time$Time$toDay = F2(
 	function (zone, time) {
 		return elm$time$Time$toCivil(
 			A2(elm$time$Time$toAdjustedMinutes, zone, time)).day;
+	});
+var elm$time$Time$toMinute = F2(
+	function (zone, time) {
+		return A2(
+			elm$core$Basics$modBy,
+			60,
+			A2(elm$time$Time$toAdjustedMinutes, zone, time));
 	});
 var elm$time$Time$Apr = {$: 'Apr'};
 var elm$time$Time$Aug = {$: 'Aug'};
@@ -5668,31 +5675,6 @@ var elm$time$Time$toMonth = F2(
 				return elm$time$Time$Dec;
 		}
 	});
-var elm$time$Time$toYear = F2(
-	function (zone, time) {
-		return elm$time$Time$toCivil(
-			A2(elm$time$Time$toAdjustedMinutes, zone, time)).year;
-	});
-var author$project$Main$viewShortDate = function (model) {
-	var tz = model.zone;
-	var posix = model.time;
-	var weekday = author$project$Main$formatWeekday(
-		A2(elm$time$Time$toWeekday, tz, posix));
-	var year = elm$core$String$fromInt(
-		A2(elm$time$Time$toYear, tz, posix));
-	var month = author$project$Main$formatMonth(
-		A2(elm$time$Time$toMonth, tz, posix));
-	var day = author$project$Main$zeroPad(
-		A2(elm$time$Time$toDay, tz, posix));
-	return elm$html$Html$text(year + ('-' + (month + ('-' + (day + (' ' + weekday))))));
-};
-var elm$time$Time$toMinute = F2(
-	function (zone, time) {
-		return A2(
-			elm$core$Basics$modBy,
-			60,
-			A2(elm$time$Time$toAdjustedMinutes, zone, time));
-	});
 var elm$time$Time$toSecond = F2(
 	function (_n0, time) {
 		return A2(
@@ -5703,16 +5685,27 @@ var elm$time$Time$toSecond = F2(
 				elm$time$Time$posixToMillis(time),
 				1000));
 	});
+var elm$time$Time$toYear = F2(
+	function (zone, time) {
+		return elm$time$Time$toCivil(
+			A2(elm$time$Time$toAdjustedMinutes, zone, time)).year;
+	});
 var author$project$Main$viewTime = function (model) {
-	var tz = model.zone;
-	var posix = model.time;
-	var second = author$project$Main$zeroPad(
-		A2(elm$time$Time$toSecond, tz, posix));
-	var minute = author$project$Main$zeroPad(
-		A2(elm$time$Time$toMinute, tz, posix));
+	var year = elm$core$String$fromInt(
+		A2(elm$time$Time$toYear, model.zone, model.time));
+	var weekday = author$project$Main$formatWeekday(
+		A2(elm$time$Time$toWeekday, model.zone, model.time));
+	var second = author$project$Main$toZeroPaddedString(
+		A2(elm$time$Time$toSecond, model.zone, model.time));
+	var month = author$project$Main$formatMonth(
+		A2(elm$time$Time$toMonth, model.zone, model.time));
+	var minute = author$project$Main$toZeroPaddedString(
+		A2(elm$time$Time$toMinute, model.zone, model.time));
 	var hour = elm$core$String$fromInt(
-		A2(elm$time$Time$toHour, tz, posix));
-	return elm$html$Html$text(hour + (':' + (minute + (':' + second))));
+		A2(elm$time$Time$toHour, model.zone, model.time));
+	var day = author$project$Main$toZeroPaddedString(
+		A2(elm$time$Time$toDay, model.zone, model.time));
+	return elm$html$Html$text(year + ('-' + (month + ('-' + (day + (' ' + (weekday + (' ' + (hour + (':' + (minute + (':' + second))))))))))));
 };
 var elm$core$Debug$toString = _Debug_toString;
 var elm$html$Html$div = _VirtualDom_node('div');
@@ -5744,17 +5737,7 @@ var author$project$Main$view = function (model) {
 					]),
 				_List_fromArray(
 					[
-						author$project$Main$viewNandosTime(model)
-					])),
-				A2(
-				elm$html$Html$div,
-				_List_fromArray(
-					[
-						elm$html$Html$Attributes$class('debug')
-					]),
-				_List_fromArray(
-					[
-						author$project$Main$viewShortDate(model)
+						author$project$Main$viewIsItTime(model)
 					])),
 				A2(
 				elm$html$Html$div,
