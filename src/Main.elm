@@ -85,14 +85,58 @@ view model =
             [ viewHumanTime model.zone model.time
             , text "\n"
             , viewHumanTime model.zone friNoon
+            , text "\n"
+            , friNoon
+                |> intervalInMs model.time
+                |> formatInterval
+                |> text
             ]
         ]
+
+
+formatInterval : Int -> String
+formatInterval interval =
+    let
+        numDays =
+            String.fromInt <| interval // dayInMs
+
+        numHours =
+            String.fromInt <| remainderBy dayInMs interval // hourInMs
+
+        numMinutes =
+            String.fromInt <| remainderBy hourInMs interval // minuteInMs
+
+        numSeconds =
+            String.fromInt <| remainderBy minuteInMs interval // 1000
+    in
+    numDays ++ " days, " ++ numHours ++ " hours, " ++ numMinutes ++ " minutes, " ++ numSeconds ++ " seconds"
+
+
+intervalInMs : Posix -> Posix -> Int
+intervalInMs start finish =
+    posixToMillis finish - posixToMillis start
+
+
+dayInMs : Int
+dayInMs =
+    86400000
+
+
+hourInMs : Int
+hourInMs =
+    3600000
+
+
+minuteInMs : Int
+minuteInMs =
+    60000
 
 
 friNoon : Posix
 friNoon =
     -- 2019-09-13 Fri 12:00:00 UTC
-    millisToPosix 1568372400000
+    -- millisToPosix 1568372400000
+    millisToPosix (1568372400000 + oneWeekInMs)
 
 
 oneWeekInMs : Int

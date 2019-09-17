@@ -5440,7 +5440,26 @@ var author$project$Main$update = F2(
 				elm$core$Platform$Cmd$none);
 		}
 	});
-var author$project$Main$friNoon = elm$time$Time$millisToPosix(1568372400000);
+var author$project$Main$dayInMs = 86400000;
+var author$project$Main$hourInMs = 3600000;
+var author$project$Main$minuteInMs = 60000;
+var author$project$Main$formatInterval = function (interval) {
+	var numSeconds = elm$core$String$fromInt(((interval % author$project$Main$minuteInMs) / 1000) | 0);
+	var numMinutes = elm$core$String$fromInt(((interval % author$project$Main$hourInMs) / author$project$Main$minuteInMs) | 0);
+	var numHours = elm$core$String$fromInt(((interval % author$project$Main$dayInMs) / author$project$Main$hourInMs) | 0);
+	var numDays = elm$core$String$fromInt((interval / author$project$Main$dayInMs) | 0);
+	return numDays + (' days, ' + (numHours + (' hours, ' + (numMinutes + (' minutes, ' + (numSeconds + ' seconds'))))));
+};
+var author$project$Main$oneWeekInMs = 604800000;
+var author$project$Main$friNoon = elm$time$Time$millisToPosix(1568372400000 + author$project$Main$oneWeekInMs);
+var elm$time$Time$posixToMillis = function (_n0) {
+	var millis = _n0.a;
+	return millis;
+};
+var author$project$Main$intervalInMs = F2(
+	function (start, finish) {
+		return elm$time$Time$posixToMillis(finish) - elm$time$Time$posixToMillis(start);
+	});
 var author$project$Main$formatMonth = function (month) {
 	switch (month.$) {
 		case 'Jan':
@@ -5511,10 +5530,6 @@ var elm$time$Time$flooredDiv = F2(
 	function (numerator, denominator) {
 		return elm$core$Basics$floor(numerator / denominator);
 	});
-var elm$time$Time$posixToMillis = function (_n0) {
-	var millis = _n0.a;
-	return millis;
-};
 var elm$time$Time$toAdjustedMinutesHelp = F3(
 	function (defaultOffset, posixMinutes, eras) {
 		toAdjustedMinutesHelp:
@@ -5748,7 +5763,11 @@ var author$project$Main$view = function (model) {
 					[
 						A2(author$project$Main$viewHumanTime, model.zone, model.time),
 						elm$html$Html$text('\n'),
-						A2(author$project$Main$viewHumanTime, model.zone, author$project$Main$friNoon)
+						A2(author$project$Main$viewHumanTime, model.zone, author$project$Main$friNoon),
+						elm$html$Html$text('\n'),
+						elm$html$Html$text(
+						author$project$Main$formatInterval(
+							A2(author$project$Main$intervalInMs, model.time, author$project$Main$friNoon)))
 					]))
 			]));
 };
