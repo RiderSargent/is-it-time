@@ -4,7 +4,21 @@ import Browser
 import Html exposing (..)
 import Html.Attributes exposing (class, id)
 import Task
-import Time exposing (..)
+import Time
+    exposing
+        ( Month(..)
+        , Weekday(..)
+        , every
+        , millisToPosix
+        , posixToMillis
+        , toDay
+        , toHour
+        , toMinute
+        , toMonth
+        , toSecond
+        , toWeekday
+        , toYear
+        )
 
 
 
@@ -19,7 +33,7 @@ type alias Model =
 
 init : () -> ( Model, Cmd Msg )
 init _ =
-    ( Model Time.utc (Time.millisToPosix 0)
+    ( Model Time.utc (millisToPosix 0)
     , Task.perform AdjustTimeZone Time.here
     )
 
@@ -37,17 +51,17 @@ view model =
             [ viewIsItTime model ]
         , pre
             [ class "debug" ]
-            [ text (formatHumanTime model.zone nextFridayNoon)
+            [ viewCountdown model
             , text "\n"
-            , nextFridayNoon
-                |> intervalInMs model.time
-                |> formatInterval
+            , model
+                |> nextFridayNoon
+                |> formatHumanTime model.zone
                 |> text
             ]
         ]
 
 
-intervalInMs : Posix -> Posix -> Int
+intervalInMs : Time.Posix -> Time.Posix -> Int
 intervalInMs start finish =
     posixToMillis finish - posixToMillis start
 
@@ -72,8 +86,16 @@ minuteInMs =
     60 * 1000
 
 
-nextFridayNoon : Posix
-nextFridayNoon =
+viewCountdown : Model -> Html msg
+viewCountdown model =
+    nextFridayNoon model
+        |> intervalInMs model.time
+        |> formatInterval
+        |> text
+
+
+nextFridayNoon : Model -> Time.Posix
+nextFridayNoon model =
     -- 2019-09-13 Fri 12:00:00 UTC is 1568372400000
     millisToPosix (1568372400000 + weekInMs)
 
@@ -82,10 +104,10 @@ viewIsItTime : Model -> Html msg
 viewIsItTime model =
     let
         weekday =
-            Time.toWeekday model.zone model.time
+            toWeekday model.zone model.time
 
         hour =
-            Time.toHour model.zone model.time
+            toHour model.zone model.time
     in
     if weekday == Fri && hour == 12 then
         text "It's time!"
@@ -94,29 +116,29 @@ viewIsItTime model =
         text "No"
 
 
-formatHumanTime : Zone -> Posix -> String
+formatHumanTime : Time.Zone -> Time.Posix -> String
 formatHumanTime tz time =
     let
         year =
-            String.fromInt (Time.toYear tz time)
+            String.fromInt (toYear tz time)
 
         month =
-            formatMonth (Time.toMonth tz time)
+            formatMonth (toMonth tz time)
 
         day =
-            formatZeroPadded (Time.toDay tz time)
+            formatZeroPadded (toDay tz time)
 
         weekday =
-            formatWeekday (Time.toWeekday tz time)
+            formatWeekday (toWeekday tz time)
 
         hour =
-            formatZeroPadded (Time.toHour tz time)
+            formatZeroPadded (toHour tz time)
 
         minute =
-            formatZeroPadded (Time.toMinute tz time)
+            formatZeroPadded (toMinute tz time)
 
         second =
-            formatZeroPadded (Time.toSecond tz time)
+            formatZeroPadded (toSecond tz time)
 
         strings =
             [ year, "-", month, "-", day, " ", weekday, " ", hour, ":", minute, ":", second ]
@@ -248,7 +270,7 @@ update msg model =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    Time.every 1000 Tick
+    every 1000 Tick
 
 
 

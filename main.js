@@ -5689,6 +5689,10 @@ var author$project$Main$formatHumanTime = F2(
 var author$project$Main$minuteInMs = 60 * 1000;
 var author$project$Main$hourInMs = 60 * author$project$Main$minuteInMs;
 var author$project$Main$dayInMs = 24 * author$project$Main$hourInMs;
+var author$project$Main$weekInMs = 7 * author$project$Main$dayInMs;
+var author$project$Main$nextFridayNoon = function (model) {
+	return elm$time$Time$millisToPosix(1568372400000 + author$project$Main$weekInMs);
+};
 var author$project$Main$formatInterval = function (interval) {
 	var seconds = elm$core$String$fromInt(((interval % author$project$Main$minuteInMs) / 1000) | 0);
 	var minutes = elm$core$String$fromInt(((interval % author$project$Main$hourInMs) / author$project$Main$minuteInMs) | 0);
@@ -5702,8 +5706,6 @@ var author$project$Main$intervalInMs = F2(
 	function (start, finish) {
 		return elm$time$Time$posixToMillis(finish) - elm$time$Time$posixToMillis(start);
 	});
-var author$project$Main$weekInMs = 7 * author$project$Main$dayInMs;
-var author$project$Main$nextFridayNoon = elm$time$Time$millisToPosix(1568372400000 + author$project$Main$weekInMs);
 var elm$json$Json$Decode$map = _Json_map1;
 var elm$json$Json$Decode$map2 = _Json_map2;
 var elm$json$Json$Decode$succeed = _Json_succeed;
@@ -5721,6 +5723,14 @@ var elm$virtual_dom$VirtualDom$toHandlerInt = function (handler) {
 };
 var elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
 var elm$html$Html$text = elm$virtual_dom$VirtualDom$text;
+var author$project$Main$viewCountdown = function (model) {
+	return elm$html$Html$text(
+		author$project$Main$formatInterval(
+			A2(
+				author$project$Main$intervalInMs,
+				model.time,
+				author$project$Main$nextFridayNoon(model))));
+};
 var author$project$Main$viewIsItTime = function (model) {
 	var weekday = A2(elm$time$Time$toWeekday, model.zone, model.time);
 	var hour = A2(elm$time$Time$toHour, model.zone, model.time);
@@ -5765,12 +5775,13 @@ var author$project$Main$view = function (model) {
 					]),
 				_List_fromArray(
 					[
-						elm$html$Html$text(
-						A2(author$project$Main$formatHumanTime, model.zone, author$project$Main$nextFridayNoon)),
+						author$project$Main$viewCountdown(model),
 						elm$html$Html$text('\n'),
 						elm$html$Html$text(
-						author$project$Main$formatInterval(
-							A2(author$project$Main$intervalInMs, model.time, author$project$Main$nextFridayNoon)))
+						A2(
+							author$project$Main$formatHumanTime,
+							model.zone,
+							author$project$Main$nextFridayNoon(model)))
 					]))
 			]));
 };
