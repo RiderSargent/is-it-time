@@ -5440,26 +5440,6 @@ var author$project$Main$update = F2(
 				elm$core$Platform$Cmd$none);
 		}
 	});
-var author$project$Main$dayInMs = 86400000;
-var author$project$Main$hourInMs = 3600000;
-var author$project$Main$minuteInMs = 60000;
-var author$project$Main$formatInterval = function (interval) {
-	var numSeconds = elm$core$String$fromInt(((interval % author$project$Main$minuteInMs) / 1000) | 0);
-	var numMinutes = elm$core$String$fromInt(((interval % author$project$Main$hourInMs) / author$project$Main$minuteInMs) | 0);
-	var numHours = elm$core$String$fromInt(((interval % author$project$Main$dayInMs) / author$project$Main$hourInMs) | 0);
-	var numDays = elm$core$String$fromInt((interval / author$project$Main$dayInMs) | 0);
-	return numDays + (' days, ' + (numHours + (' hours, ' + (numMinutes + (' minutes, ' + (numSeconds + ' seconds'))))));
-};
-var author$project$Main$oneWeekInMs = 604800000;
-var author$project$Main$friNoon = elm$time$Time$millisToPosix(1568372400000 + author$project$Main$oneWeekInMs);
-var elm$time$Time$posixToMillis = function (_n0) {
-	var millis = _n0.a;
-	return millis;
-};
-var author$project$Main$intervalInMs = F2(
-	function (start, finish) {
-		return elm$time$Time$posixToMillis(finish) - elm$time$Time$posixToMillis(start);
-	});
 var author$project$Main$formatMonth = function (month) {
 	switch (month.$) {
 		case 'Jan':
@@ -5509,27 +5489,14 @@ var author$project$Main$formatWeekday = function (weekday) {
 var author$project$Main$toZeroPaddedString = function (digits) {
 	return (digits < 10) ? ('0' + elm$core$String$fromInt(digits)) : elm$core$String$fromInt(digits);
 };
-var elm$json$Json$Decode$map = _Json_map1;
-var elm$json$Json$Decode$map2 = _Json_map2;
-var elm$json$Json$Decode$succeed = _Json_succeed;
-var elm$virtual_dom$VirtualDom$toHandlerInt = function (handler) {
-	switch (handler.$) {
-		case 'Normal':
-			return 0;
-		case 'MayStopPropagation':
-			return 1;
-		case 'MayPreventDefault':
-			return 2;
-		default:
-			return 3;
-	}
-};
-var elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
-var elm$html$Html$text = elm$virtual_dom$VirtualDom$text;
 var elm$time$Time$flooredDiv = F2(
 	function (numerator, denominator) {
 		return elm$core$Basics$floor(numerator / denominator);
 	});
+var elm$time$Time$posixToMillis = function (_n0) {
+	var millis = _n0.a;
+	return millis;
+};
 var elm$time$Time$toAdjustedMinutesHelp = F3(
 	function (defaultOffset, posixMinutes, eras) {
 		toAdjustedMinutesHelp:
@@ -5699,7 +5666,7 @@ var elm$time$Time$toYear = F2(
 		return elm$time$Time$toCivil(
 			A2(elm$time$Time$toAdjustedMinutes, zone, time)).year;
 	});
-var author$project$Main$viewHumanTime = F2(
+var author$project$Main$formatHumanTime = F2(
 	function (tz, time) {
 		var year = elm$core$String$fromInt(
 			A2(elm$time$Time$toYear, tz, time));
@@ -5715,8 +5682,41 @@ var author$project$Main$viewHumanTime = F2(
 			A2(elm$time$Time$toHour, tz, time));
 		var day = author$project$Main$toZeroPaddedString(
 			A2(elm$time$Time$toDay, tz, time));
-		return elm$html$Html$text(year + ('-' + (month + ('-' + (day + (' ' + (weekday + (' ' + (hour + (':' + (minute + (':' + second))))))))))));
+		return year + ('-' + (month + ('-' + (day + (' ' + (weekday + (' ' + (hour + (':' + (minute + (':' + second)))))))))));
 	});
+var author$project$Main$minuteInMs = 60 * 1000;
+var author$project$Main$hourInMs = 60 * author$project$Main$minuteInMs;
+var author$project$Main$dayInMs = 24 * author$project$Main$hourInMs;
+var author$project$Main$formatInterval = function (interval) {
+	var numSeconds = elm$core$String$fromInt(((interval % author$project$Main$minuteInMs) / 1000) | 0);
+	var numMinutes = elm$core$String$fromInt(((interval % author$project$Main$hourInMs) / author$project$Main$minuteInMs) | 0);
+	var numHours = elm$core$String$fromInt(((interval % author$project$Main$dayInMs) / author$project$Main$hourInMs) | 0);
+	var numDays = elm$core$String$fromInt((interval / author$project$Main$dayInMs) | 0);
+	return numDays + (' days, ' + (numHours + (' hours, ' + (numMinutes + (' minutes, ' + (numSeconds + ' seconds'))))));
+};
+var author$project$Main$intervalInMs = F2(
+	function (start, finish) {
+		return elm$time$Time$posixToMillis(finish) - elm$time$Time$posixToMillis(start);
+	});
+var author$project$Main$weekInMs = 7 * author$project$Main$dayInMs;
+var author$project$Main$nextFridayNoon = elm$time$Time$millisToPosix(1568372400000 + author$project$Main$weekInMs);
+var elm$json$Json$Decode$map = _Json_map1;
+var elm$json$Json$Decode$map2 = _Json_map2;
+var elm$json$Json$Decode$succeed = _Json_succeed;
+var elm$virtual_dom$VirtualDom$toHandlerInt = function (handler) {
+	switch (handler.$) {
+		case 'Normal':
+			return 0;
+		case 'MayStopPropagation':
+			return 1;
+		case 'MayPreventDefault':
+			return 2;
+		default:
+			return 3;
+	}
+};
+var elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
+var elm$html$Html$text = elm$virtual_dom$VirtualDom$text;
 var author$project$Main$viewIsItTime = function (model) {
 	var weekday = A2(elm$time$Time$toWeekday, model.zone, model.time);
 	var hour = A2(elm$time$Time$toHour, model.zone, model.time);
@@ -5761,13 +5761,12 @@ var author$project$Main$view = function (model) {
 					]),
 				_List_fromArray(
 					[
-						A2(author$project$Main$viewHumanTime, model.zone, model.time),
-						elm$html$Html$text('\n'),
-						A2(author$project$Main$viewHumanTime, model.zone, author$project$Main$friNoon),
+						elm$html$Html$text(
+						A2(author$project$Main$formatHumanTime, model.zone, author$project$Main$nextFridayNoon)),
 						elm$html$Html$text('\n'),
 						elm$html$Html$text(
 						author$project$Main$formatInterval(
-							A2(author$project$Main$intervalInMs, model.time, author$project$Main$friNoon)))
+							A2(author$project$Main$intervalInMs, model.time, author$project$Main$nextFridayNoon)))
 					]))
 			]));
 };

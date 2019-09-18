@@ -37,11 +37,9 @@ view model =
             [ viewIsItTime model ]
         , pre
             [ class "debug" ]
-            [ viewHumanTime model.zone model.time
+            [ text (formatHumanTime model.zone nextFridayNoon)
             , text "\n"
-            , viewHumanTime model.zone friNoon
-            , text "\n"
-            , friNoon
+            , nextFridayNoon
                 |> intervalInMs model.time
                 |> formatInterval
                 |> text
@@ -54,49 +52,30 @@ intervalInMs start finish =
     posixToMillis finish - posixToMillis start
 
 
-formatInterval : Int -> String
-formatInterval interval =
-    let
-        numDays =
-            String.fromInt <| interval // dayInMs
-
-        numHours =
-            String.fromInt <| remainderBy dayInMs interval // hourInMs
-
-        numMinutes =
-            String.fromInt <| remainderBy hourInMs interval // minuteInMs
-
-        numSeconds =
-            String.fromInt <| remainderBy minuteInMs interval // 1000
-    in
-    numDays ++ " days, " ++ numHours ++ " hours, " ++ numMinutes ++ " minutes, " ++ numSeconds ++ " seconds"
+weekInMs : Int
+weekInMs =
+    7 * dayInMs
 
 
 dayInMs : Int
 dayInMs =
-    86400000
+    24 * hourInMs
 
 
 hourInMs : Int
 hourInMs =
-    3600000
+    60 * minuteInMs
 
 
 minuteInMs : Int
 minuteInMs =
-    60000
+    60 * 1000
 
 
-friNoon : Posix
-friNoon =
-    -- 2019-09-13 Fri 12:00:00 UTC
-    -- millisToPosix 1568372400000
-    millisToPosix (1568372400000 + oneWeekInMs)
-
-
-oneWeekInMs : Int
-oneWeekInMs =
-    604800000
+nextFridayNoon : Posix
+nextFridayNoon =
+    -- 2019-09-13 Fri 12:00:00 UTC is 1568372400000
+    millisToPosix (1568372400000 + weekInMs)
 
 
 viewIsItTime : Model -> Html msg
@@ -115,8 +94,8 @@ viewIsItTime model =
         text "No"
 
 
-viewHumanTime : Zone -> Posix -> Html msg
-viewHumanTime tz time =
+formatHumanTime : Zone -> Posix -> String
+formatHumanTime tz time =
     let
         year =
             String.fromInt (Time.toYear tz time)
@@ -139,7 +118,25 @@ viewHumanTime tz time =
         second =
             toZeroPaddedString (Time.toSecond tz time)
     in
-    text (year ++ "-" ++ month ++ "-" ++ day ++ " " ++ weekday ++ " " ++ hour ++ ":" ++ minute ++ ":" ++ second)
+    year ++ "-" ++ month ++ "-" ++ day ++ " " ++ weekday ++ " " ++ hour ++ ":" ++ minute ++ ":" ++ second
+
+
+formatInterval : Int -> String
+formatInterval interval =
+    let
+        numDays =
+            String.fromInt <| interval // dayInMs
+
+        numHours =
+            String.fromInt <| remainderBy dayInMs interval // hourInMs
+
+        numMinutes =
+            String.fromInt <| remainderBy hourInMs interval // minuteInMs
+
+        numSeconds =
+            String.fromInt <| remainderBy minuteInMs interval // 1000
+    in
+    numDays ++ " days, " ++ numHours ++ " hours, " ++ numMinutes ++ " minutes, " ++ numSeconds ++ " seconds"
 
 
 toZeroPaddedString : Int -> String
