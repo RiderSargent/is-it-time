@@ -68,22 +68,7 @@ intervalInMs start finish =
 
 weekInMs : Int
 weekInMs =
-    7 * dayInMs
-
-
-dayInMs : Int
-dayInMs =
-    24 * hourInMs
-
-
-hourInMs : Int
-hourInMs =
-    60 * minuteInMs
-
-
-minuteInMs : Int
-minuteInMs =
-    60 * 1000
+    7 * 24 * 60 * 60 * 1000
 
 
 viewCountdown : Model -> Html msg
@@ -149,17 +134,29 @@ formatHumanTime tz time =
 formatInterval : Int -> String
 formatInterval interval =
     let
+        second =
+            1000
+
+        minute =
+            60 * second
+
+        hour =
+            60 * minute
+
+        day =
+            24 * hour
+
         days =
-            String.fromInt <| interval // dayInMs
+            String.fromInt <| interval // day
 
         hours =
-            String.fromInt <| remainderBy dayInMs interval // hourInMs
+            String.fromInt <| remainderBy day interval // hour
 
         minutes =
-            String.fromInt <| remainderBy hourInMs interval // minuteInMs
+            String.fromInt <| remainderBy hour interval // minute
 
         seconds =
-            String.fromInt <| remainderBy minuteInMs interval // 1000
+            String.fromInt <| remainderBy minute interval // second
 
         strings =
             [ days, " days, ", hours, " hours, ", minutes, " minutes, ", seconds, " seconds" ]

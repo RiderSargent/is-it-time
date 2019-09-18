@@ -5686,18 +5686,19 @@ var author$project$Main$formatHumanTime = F2(
 			[year, '-', month, '-', day, ' ', weekday, ' ', hour, ':', minute, ':', second]);
 		return A3(elm$core$List$foldr, elm$core$Basics$append, '', strings);
 	});
-var author$project$Main$minuteInMs = 60 * 1000;
-var author$project$Main$hourInMs = 60 * author$project$Main$minuteInMs;
-var author$project$Main$dayInMs = 24 * author$project$Main$hourInMs;
-var author$project$Main$weekInMs = 7 * author$project$Main$dayInMs;
+var author$project$Main$weekInMs = (((7 * 24) * 60) * 60) * 1000;
 var author$project$Main$nextFridayNoon = function (model) {
 	return elm$time$Time$millisToPosix(1568372400000 + author$project$Main$weekInMs);
 };
 var author$project$Main$formatInterval = function (interval) {
-	var seconds = elm$core$String$fromInt(((interval % author$project$Main$minuteInMs) / 1000) | 0);
-	var minutes = elm$core$String$fromInt(((interval % author$project$Main$hourInMs) / author$project$Main$minuteInMs) | 0);
-	var hours = elm$core$String$fromInt(((interval % author$project$Main$dayInMs) / author$project$Main$hourInMs) | 0);
-	var days = elm$core$String$fromInt((interval / author$project$Main$dayInMs) | 0);
+	var second = 1000;
+	var minute = 60 * second;
+	var seconds = elm$core$String$fromInt(((interval % minute) / second) | 0);
+	var hour = 60 * minute;
+	var minutes = elm$core$String$fromInt(((interval % hour) / minute) | 0);
+	var day = 24 * hour;
+	var days = elm$core$String$fromInt((interval / day) | 0);
+	var hours = elm$core$String$fromInt(((interval % day) / hour) | 0);
 	var strings = _List_fromArray(
 		[days, ' days, ', hours, ' hours, ', minutes, ' minutes, ', seconds, ' seconds']);
 	return A3(elm$core$List$foldr, elm$core$Basics$append, '', strings);
