@@ -5486,7 +5486,7 @@ var author$project$Main$formatWeekday = function (weekday) {
 			return 'Sun';
 	}
 };
-var author$project$Main$toZeroPaddedString = function (digits) {
+var author$project$Main$formatZeroPadded = function (digits) {
 	return (digits < 10) ? ('0' + elm$core$String$fromInt(digits)) : elm$core$String$fromInt(digits);
 };
 var elm$time$Time$flooredDiv = F2(
@@ -5672,27 +5672,31 @@ var author$project$Main$formatHumanTime = F2(
 			A2(elm$time$Time$toYear, tz, time));
 		var weekday = author$project$Main$formatWeekday(
 			A2(elm$time$Time$toWeekday, tz, time));
-		var second = author$project$Main$toZeroPaddedString(
+		var second = author$project$Main$formatZeroPadded(
 			A2(elm$time$Time$toSecond, tz, time));
 		var month = author$project$Main$formatMonth(
 			A2(elm$time$Time$toMonth, tz, time));
-		var minute = author$project$Main$toZeroPaddedString(
+		var minute = author$project$Main$formatZeroPadded(
 			A2(elm$time$Time$toMinute, tz, time));
-		var hour = elm$core$String$fromInt(
+		var hour = author$project$Main$formatZeroPadded(
 			A2(elm$time$Time$toHour, tz, time));
-		var day = author$project$Main$toZeroPaddedString(
+		var day = author$project$Main$formatZeroPadded(
 			A2(elm$time$Time$toDay, tz, time));
-		return year + ('-' + (month + ('-' + (day + (' ' + (weekday + (' ' + (hour + (':' + (minute + (':' + second)))))))))));
+		var strings = _List_fromArray(
+			[year, '-', month, '-', day, ' ', weekday, ' ', hour, ':', minute, ':', second]);
+		return A3(elm$core$List$foldr, elm$core$Basics$append, '', strings);
 	});
 var author$project$Main$minuteInMs = 60 * 1000;
 var author$project$Main$hourInMs = 60 * author$project$Main$minuteInMs;
 var author$project$Main$dayInMs = 24 * author$project$Main$hourInMs;
 var author$project$Main$formatInterval = function (interval) {
-	var numSeconds = elm$core$String$fromInt(((interval % author$project$Main$minuteInMs) / 1000) | 0);
-	var numMinutes = elm$core$String$fromInt(((interval % author$project$Main$hourInMs) / author$project$Main$minuteInMs) | 0);
-	var numHours = elm$core$String$fromInt(((interval % author$project$Main$dayInMs) / author$project$Main$hourInMs) | 0);
-	var numDays = elm$core$String$fromInt((interval / author$project$Main$dayInMs) | 0);
-	return numDays + (' days, ' + (numHours + (' hours, ' + (numMinutes + (' minutes, ' + (numSeconds + ' seconds'))))));
+	var seconds = elm$core$String$fromInt(((interval % author$project$Main$minuteInMs) / 1000) | 0);
+	var minutes = elm$core$String$fromInt(((interval % author$project$Main$hourInMs) / author$project$Main$minuteInMs) | 0);
+	var hours = elm$core$String$fromInt(((interval % author$project$Main$dayInMs) / author$project$Main$hourInMs) | 0);
+	var days = elm$core$String$fromInt((interval / author$project$Main$dayInMs) | 0);
+	var strings = _List_fromArray(
+		[days, ' days, ', hours, ' hours, ', minutes, ' minutes, ', seconds, ' seconds']);
+	return A3(elm$core$List$foldr, elm$core$Basics$append, '', strings);
 };
 var author$project$Main$intervalInMs = F2(
 	function (start, finish) {

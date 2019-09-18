@@ -104,43 +104,49 @@ formatHumanTime tz time =
             formatMonth (Time.toMonth tz time)
 
         day =
-            toZeroPaddedString (Time.toDay tz time)
+            formatZeroPadded (Time.toDay tz time)
 
         weekday =
             formatWeekday (Time.toWeekday tz time)
 
         hour =
-            String.fromInt (Time.toHour tz time)
+            formatZeroPadded (Time.toHour tz time)
 
         minute =
-            toZeroPaddedString (Time.toMinute tz time)
+            formatZeroPadded (Time.toMinute tz time)
 
         second =
-            toZeroPaddedString (Time.toSecond tz time)
+            formatZeroPadded (Time.toSecond tz time)
+
+        strings =
+            [ year, "-", month, "-", day, " ", weekday, " ", hour, ":", minute, ":", second ]
     in
-    year ++ "-" ++ month ++ "-" ++ day ++ " " ++ weekday ++ " " ++ hour ++ ":" ++ minute ++ ":" ++ second
+    List.foldr (++) "" strings
 
 
 formatInterval : Int -> String
 formatInterval interval =
     let
-        numDays =
+        days =
             String.fromInt <| interval // dayInMs
 
-        numHours =
+        hours =
             String.fromInt <| remainderBy dayInMs interval // hourInMs
 
-        numMinutes =
+        minutes =
             String.fromInt <| remainderBy hourInMs interval // minuteInMs
 
-        numSeconds =
+        seconds =
             String.fromInt <| remainderBy minuteInMs interval // 1000
+
+        strings =
+            [ days, " days, ", hours, " hours, ", minutes, " minutes, ", seconds, " seconds" ]
     in
-    numDays ++ " days, " ++ numHours ++ " hours, " ++ numMinutes ++ " minutes, " ++ numSeconds ++ " seconds"
+    List.foldr (++) "" strings
 
 
-toZeroPaddedString : Int -> String
-toZeroPaddedString digits =
+formatZeroPadded : Int -> String
+formatZeroPadded digits =
     if digits < 10 then
         "0" ++ String.fromInt digits
 
