@@ -8,19 +8,6 @@ import Time exposing (..)
 
 
 
--- MAIN
-
-
-main =
-    Browser.element
-        { init = init
-        , view = view
-        , update = update
-        , subscriptions = subscriptions
-        }
-
-
-
 -- MODEL
 
 
@@ -35,38 +22,6 @@ init _ =
     ( Model Time.utc (Time.millisToPosix 0)
     , Task.perform AdjustTimeZone Time.here
     )
-
-
-
--- UPDATE
-
-
-type Msg
-    = Tick Time.Posix
-    | AdjustTimeZone Time.Zone
-
-
-update : Msg -> Model -> ( Model, Cmd Msg )
-update msg model =
-    case msg of
-        Tick newTime ->
-            ( { model | time = newTime }
-            , Cmd.none
-            )
-
-        AdjustTimeZone newZone ->
-            ( { model | zone = newZone }
-            , Cmd.none
-            )
-
-
-
--- SUBSCRIPTIONS
-
-
-subscriptions : Model -> Sub Msg
-subscriptions model =
-    Time.every 1000 Tick
 
 
 
@@ -94,6 +49,11 @@ view model =
         ]
 
 
+intervalInMs : Posix -> Posix -> Int
+intervalInMs start finish =
+    posixToMillis finish - posixToMillis start
+
+
 formatInterval : Int -> String
 formatInterval interval =
     let
@@ -110,11 +70,6 @@ formatInterval interval =
             String.fromInt <| remainderBy minuteInMs interval // 1000
     in
     numDays ++ " days, " ++ numHours ++ " hours, " ++ numMinutes ++ " minutes, " ++ numSeconds ++ " seconds"
-
-
-intervalInMs : Posix -> Posix -> Int
-intervalInMs start finish =
-    posixToMillis finish - posixToMillis start
 
 
 dayInMs : Int
@@ -259,3 +214,48 @@ formatWeekday weekday =
 
         Sun ->
             "Sun"
+
+
+
+-- UPDATE
+
+
+type Msg
+    = Tick Time.Posix
+    | AdjustTimeZone Time.Zone
+
+
+update : Msg -> Model -> ( Model, Cmd Msg )
+update msg model =
+    case msg of
+        Tick newTime ->
+            ( { model | time = newTime }
+            , Cmd.none
+            )
+
+        AdjustTimeZone newZone ->
+            ( { model | zone = newZone }
+            , Cmd.none
+            )
+
+
+
+-- SUBSCRIPTIONS
+
+
+subscriptions : Model -> Sub Msg
+subscriptions model =
+    Time.every 1000 Tick
+
+
+
+-- MAIN
+
+
+main =
+    Browser.element
+        { init = init
+        , view = view
+        , update = update
+        , subscriptions = subscriptions
+        }
