@@ -1,20 +1,31 @@
 <!DOCTYPE HTML>
 <html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Is It Time?</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <div id="is-it-time"></div>
 
-<head>
-  <meta charset="UTF-8">
-  <title>Is It Time?</title>
-  <link rel="stylesheet" href="style.css">
-  <script src="main.js"></script>
-</head>
+    <script charset="utf-8">
+      function checkTime() {
+        var date = new Date();
+        var containerDiv = document.getElementById("is-it-time");
+        var minuteOffset = 5;
 
-<body>
-  <div id="elm-node"></div>
-  <script>
-    var app = Elm.Main.init({
-                node: document.getElementById("elm-node")
-              })
-  </script>
-</body>
+        date.setMinutes(date.getMinutes() + minuteOffset);
 
+        if (date.getDay() === 5 && date.getHours() === 12) {
+            containerDiv.innerHTML = "It's time!";
+        } else {
+            containerDiv.innerHTML = "No.";
+        }
+    }
+
+    var dateLoop = setInterval(function() {
+        checkTime();
+    }, 1000);
+    </script>
+  </body>
 </html>
